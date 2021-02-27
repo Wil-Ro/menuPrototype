@@ -15,6 +15,7 @@ class Menu extends React.Component<menuProps, {}>
 	{
 		super(props)
 	}
+
 	public render()
 	{
 		if (this.props.isOpen)
@@ -81,36 +82,36 @@ class MyGadget extends React.Component< {}, gadgetState >
 		}
 	}
 
+	private handVolume:AvVolume =
+	{
+		type: EVolumeType.Sphere,
+		radius: 0.8,
+		visualize: false
+	};
+
+	private handVolumeLarger:AvVolume =
+	{
+		type: EVolumeType.Sphere,
+		radius: 1.5,
+		visualize: false
+	};
+
+	private handInterfaceMain:InterfaceProp[] = 
+	[{ 
+		iface: "OpenMenuMain@1",
+		processor: this.collideMain
+	}];
+
+	private handInterfaceSecondary:InterfaceProp[] = 
+	[{ 
+		iface: "OpenMenuSecondary@1",
+		processor: this.collideSecondary
+	}];
+
 	public render()
 	{
-		var handVolume:AvVolume =
-		{
-			type: EVolumeType.Sphere,
-			radius: 0.8,
-			visualize: false
-		};
-
-		var handVolumeLarger:AvVolume =
-		{
-			type: EVolumeType.Sphere,
-			radius: 1.5,
-			visualize: false
-		};
-
-		var handInterfaceMain:InterfaceProp[] = 
-		[{ 
-			iface: "OpenMenuMain@1",
-			processor: this.collideMain
-		}];
-
-		var handInterfaceSecondary:InterfaceProp[] = 
-		[{ 
-			iface: "OpenMenuSecondary@1",
-			processor: this.collideSecondary
-		}];
 
 		this.updateDrawMenu();
-
 
 		return (
 				<div>
@@ -121,22 +122,22 @@ class MyGadget extends React.Component< {}, gadgetState >
 
 						<AvOrigin path = "/user/hand/left">
 							<AvTransform uniformScale = {0.03} translateY = {-0.13} translateZ = {0.13}>
-								<AvInterfaceEntity volume = {handVolume} transmits = {handInterfaceMain}></AvInterfaceEntity>
+								<AvInterfaceEntity volume = {this.handVolume} transmits = {this.handInterfaceMain}></AvInterfaceEntity>
 							</AvTransform>
 
 							<AvTransform uniformScale = {0.03} translateY = {-0.24} translateZ = {0.23}>
-								<AvInterfaceEntity volume = {handVolumeLarger} transmits = {handInterfaceSecondary}></AvInterfaceEntity>
+								<AvInterfaceEntity volume = {this.handVolumeLarger} transmits = {this.handInterfaceSecondary}></AvInterfaceEntity>
 							</AvTransform>
 						</AvOrigin>
 
 
 						<AvOrigin path = "/user/hand/right">
 							<AvTransform uniformScale = {0.03} translateY = {-0.13} translateZ = {0.13}>
-								<AvInterfaceEntity volume = {handVolume} receives = {handInterfaceMain}></AvInterfaceEntity>
+								<AvInterfaceEntity volume = {this.handVolume} receives = {this.handInterfaceMain}></AvInterfaceEntity>
 							</AvTransform>
 							
 							<AvTransform uniformScale = {0.03} translateZ = {0.13}>
-								<AvInterfaceEntity volume = {handVolume} receives = {handInterfaceSecondary}></AvInterfaceEntity>
+								<AvInterfaceEntity volume = {this.handVolume} receives = {this.handInterfaceSecondary}></AvInterfaceEntity>
 							</AvTransform>
 						</AvOrigin>
 
@@ -155,5 +156,9 @@ During a redraw we check both volume variables and if both are true then we togg
 The two volumes are main and secondary, main is a pair of volumes at the bottom of the controllers, secondary volumes are placed on the top of the right controller and quite far below the bottom of the left controller.
 Main checks for contact between controllers,
 Secondary ensures the two are pointing away from each other, the bigger the lower volume the less exact the angle between the two controllers needs to be
+
+todo:
+-mess around with volume positions
+-half second cooldown on toggle?
 */
 renderAardvarkRoot( "root", <MyGadget/> );
