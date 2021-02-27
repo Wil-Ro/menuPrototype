@@ -38,8 +38,8 @@ class Menu extends React.Component<menuProps, {}>
 
 interface gadgetState
 {
-	collideDetection1: boolean,
-	collideDetection2: boolean,
+	collideDetectionMain: boolean,
+	collideDetectionSecondary: boolean,
 }
 
 class MyGadget extends React.Component< {}, gadgetState >
@@ -50,34 +50,34 @@ class MyGadget extends React.Component< {}, gadgetState >
 		super( props );
 		this.state = 
 		{ 
-			collideDetection1: false,
-			collideDetection2: false,
+			collideDetectionMain: false,
+			collideDetectionSecondary: false,
 		};
 	}
 
 	private updateDrawMenu()
 	{
-		if(this.state.collideDetection1 && this.state.collideDetection2)		
+		if(this.state.collideDetectionMain && this.state.collideDetectionSecondary)		
 			this.drawMenu = !this.drawMenu
 	}
 	
 	@bind
 	public collideMain(givenInterface: ActiveInterface) // for volumes at bottom of controllers
 	{
-		if(givenInterface.role == InterfaceRole.Transmitter) // this function runs twice, once for transmitter and once for reciever, but we only want it to run once, so we check
+		if(givenInterface.role == InterfaceRole.Transmitter) // this function runs twice, once for transmitter and once for reciever, but we only want it to run once, so we only run on transmitters
 		{
-			givenInterface.onEnded(() => this.setState({collideDetection1: false}))
-			this.setState({collideDetection1: true});
+			givenInterface.onEnded(() => this.setState({collideDetectionMain: false}))
+			this.setState({collideDetectionMain: true});
 		}
 	}
 
 	@bind
 	public collideSecondary(givenInterface: ActiveInterface) // for volumes on top and far bottom of controllers
 	{
-		if(givenInterface.role == InterfaceRole.Transmitter) // this function runs twice, once for transmitter and once for reciever, but we only want it to run once, so we check
+		if(givenInterface.role == InterfaceRole.Transmitter)
 		{
-			givenInterface.onEnded(() => this.setState({collideDetection2: false}))
-			this.setState({collideDetection2: true});
+			givenInterface.onEnded(() => this.setState({collideDetectionSecondary: false}))
+			this.setState({collideDetectionSecondary: true});
 		}
 	}
 
@@ -87,14 +87,14 @@ class MyGadget extends React.Component< {}, gadgetState >
 		{
 			type: EVolumeType.Sphere,
 			radius: 0.8,
-			visualize: true
+			visualize: false
 		};
 
 		var handVolumeLarger:AvVolume =
 		{
 			type: EVolumeType.Sphere,
 			radius: 1.5,
-			visualize: true
+			visualize: false
 		};
 
 		var handInterfaceMain:InterfaceProp[] = 
@@ -115,28 +115,45 @@ class MyGadget extends React.Component< {}, gadgetState >
 		return (
 				<div>
 					<AvStandardGrabbable modelUri={ g_builtinModelBox } modelScale={ 0.03 } style={ GrabbableStyle.Gadget }>
+
 						<Menu isOpen = {this.drawMenu}></Menu>
+
+
 						<AvOrigin path = "/user/hand/left">
 							<AvTransform uniformScale = {0.03} translateY = {-0.13} translateZ = {0.13}>
 								<AvInterfaceEntity volume = {handVolume} transmits = {handInterfaceMain}></AvInterfaceEntity>
 							</AvTransform>
+
 							<AvTransform uniformScale = {0.03} translateY = {-0.24} translateZ = {0.23}>
 								<AvInterfaceEntity volume = {handVolumeLarger} transmits = {handInterfaceSecondary}></AvInterfaceEntity>
 							</AvTransform>
 						</AvOrigin>
+
+
 						<AvOrigin path = "/user/hand/right">
 							<AvTransform uniformScale = {0.03} translateY = {-0.13} translateZ = {0.13}>
 								<AvInterfaceEntity volume = {handVolume} receives = {handInterfaceMain}></AvInterfaceEntity>
 							</AvTransform>
+							
 							<AvTransform uniformScale = {0.03} translateZ = {0.13}>
 								<AvInterfaceEntity volume = {handVolume} receives = {handInterfaceSecondary}></AvInterfaceEntity>
 							</AvTransform>
 						</AvOrigin>
+
 					</AvStandardGrabbable>
 				</div>			
 		);
 	}
 
 }
-//run npm you buffoon
+
+/*
+how this works:
+We have 2 pairs of volumes, when a pair intersects/connects we set a variable to true, when they disconnect we set it to false. Whenever one of these variables changes the screen redraws, because SetState.
+During a redraw we check both volume variables and if both are true then we toggle the menu.
+
+The two volumes are main and secondary, main is a pair of volumes at the bottom of the controllers, secondary volumes are placed on the top of the right controller and quite far below the bottom of the left controller.
+Main checks for contact between controllers,
+Secondary ensures the two are pointing away from each other, the bigger the lower volume the less exact the angle between the two controllers needs to be
+*/
 renderAardvarkRoot( "root", <MyGadget/> );
