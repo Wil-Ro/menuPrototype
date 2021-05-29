@@ -3,7 +3,7 @@
 	"name": "menuPrototype",
 	"icons": [
 		{
-			"src": "models/placeholder.glb",
+			"src": "models/IconTilt.glb",
 			"type": "model/gltf-binary"
 		}
 	],
