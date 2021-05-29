@@ -1,7 +1,20 @@
 body, html
 {
-	background-color: lightskyblue;
+	background-color: transparent;
 	height: 100%;
+
+	font-size: 2rem;	
+	touch-action: manipulation;
+
+	overflow: hidden;
+}
+
+button{
+	background-color: white;
+	border: none;
+	border-radius: 4px;
+
+	margin-left:5px;
 }
 
 .Button 
@@ -38,4 +51,27 @@ body, html
 .GrabbedHighlight
 {
 	background-color: blue;
+}
+
+.TransformButton{
+	font-size: 1.2rem;
+}
+
+
+.TransformControlContainer{
+	display: flex;
+	justify-content: space-between;
+
+	background-color: gray;
+	padding: 5px;
+	border-radius: 15px;
+	
+	font-size: 1.4rem;
+
+	margin-bottom: 10px;
+}
+
+.TransformControlImage{
+	width: 200px;
+	height: auto;
 }
