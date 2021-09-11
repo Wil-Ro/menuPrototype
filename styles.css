@@ -75,3 +75,29 @@ button{
 	width: 200px;
 	height: auto;
 }
+
+.ToggleIndicatorOn{
+	background-color: #00ffCD;
+	height: 1.2rem;
+	width: 1.2rem;
+	border-radius: 5px;
+	margin-left: 15px;
+}
+
+.ToggleIndicatorOff{
+	background-color: transparent;
+	border: 0.2rem solid #00ffCD;
+	height: 0.8rem;
+	width: 0.8rem;
+	border-radius: 5px;
+	margin-left: 15px;
+}
+
+.ToggleIndicatorBox{
+	font-size: 1rem;
+	background-color: gray;
+	display: flex;
+	margin-right: 60vw;
+	padding: 5px;
+	border-radius: 7px;
+}
